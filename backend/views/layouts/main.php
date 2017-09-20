@@ -9,6 +9,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
@@ -26,10 +27,7 @@ AppAsset::register($this);
 <body  class="skin-black">
 <?php $this->beginBody() ?>
 
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
+        
          <header class="header">
             <a href="index.html" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
@@ -267,7 +265,7 @@ AppAsset::register($this);
                                         <a href="#" class="btn btn-default btn-flat">Profile</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="<?=Url::to(['site/logout'])?>"  data-method="post" class="btn btn-default btn-flat">Sign out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -311,24 +309,24 @@ AppAsset::register($this);
                         </li>
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-user"></i>
-                                <span>Users</span>
+                                <i class="fa fa-gear"></i>
+                                <span>Configuration</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Add User</a></li>
-                                <li><a href="pages/charts/flot.html"><i class="fa fa-angle-double-right"></i> Manage Users</a></li>
+                                <li><a href="<?=Url::to(['category/index'])?>"><i class="fa fa-angle-double-right"></i> Categories</a></li>
+                                <li><a href="<?=Url::to(['menu-category/index'])?>"><i class="fa fa-angle-double-right"></i> Menu categories</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-cutlery"></i>
-                                <span>Orders</span>
+                                <i class="fa fa-table"></i>
+                                <span>Tables</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Add Order</a></li>
-                                <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Manage Orders</a></li>
+                                <li><a href="<?=Url::to(['table/create'])?>"><i class="fa fa-angle-double-right"></i> Add Table</a></li>
+                                <li><a href="<?=Url::to(['table/index'])?>"><i class="fa fa-angle-double-right"></i> Manage Tables</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
@@ -340,19 +338,18 @@ AppAsset::register($this);
                             <ul class="treeview-menu">
                                 <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Add Food items</a></li>
                                 <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Manage Food items</a></li>
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Add Food categories</a></li>
-                                <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Manage Food categories</a></li>
                             </ul>
                         </li>
+
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-table"></i>
-                                <span>Tables</span>
+                                <i class="fa fa-cutlery"></i>
+                                <span>Orders</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Add Table</a></li>
-                                <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Manage Tables</a></li>
+                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Add Order</a></li>
+                                <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Manage Orders</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
@@ -374,7 +371,7 @@ AppAsset::register($this);
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">
                 <!-- Content Header (Page header) -->
-                <section class="content-header">
+            <!--    <section class="content-header">
                     <h1>
                         Dashboard
                         <small>Control panel</small>
@@ -384,8 +381,12 @@ AppAsset::register($this);
                         <li class="active">Dashboard</li>
                     </ol>
                 </section>
-
+            -->
                 <!-- Main content -->
+                <?php  echo Breadcrumbs::widget([
+                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                ]);  ?>
+                <?= Alert::widget() ?>
                 <section class="content">
                     <?= $content ?>
                 </section><!-- /.content -->
@@ -404,3 +405,11 @@ AppAsset::register($this);
 </body>
 </html>
 <?php $this->endPage() ?>
+
+<?php
+$this->registerCss("
+    .left-side{
+        position: static !important;
+    }
+");
+?>

@@ -23,8 +23,8 @@ class AppAsset extends AssetBundle
         'css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css',
     ];
     public $js = [
-        'http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js',
-        'js/jquery-ui-1.10.3.min.js',
+        //'http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js',
+        //'js/jquery-ui-1.10.3.min.js',
         'js/bootstrap.min.js',
         '//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
         'js/plugins/sparkline/jquery.sparkline.min.js',

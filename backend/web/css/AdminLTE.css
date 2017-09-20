@@ -62,8 +62,7 @@ body > .header {
 }
 /*left side - contains sidebar*/
 .left-side {
-  position: absolute;
-  width: 220px;
+ position: absolute; width: 220px;
   top: 0;
 }
 @media screen and (min-width: 992px) {
