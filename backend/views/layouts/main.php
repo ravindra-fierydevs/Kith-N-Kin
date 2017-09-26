@@ -336,8 +336,8 @@ AppAsset::register($this);
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Add Food items</a></li>
-                                <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Manage Food items</a></li>
+                                <li><a href="<?=Url::to(['food-item/create'])?>"><i class="fa fa-angle-double-right"></i> Add Food items</a></li>
+                                <li><a href="<?=Url::to(['food-item/index'])?>"><i class="fa fa-angle-double-right"></i> Manage Food items</a></li>
                             </ul>
                         </li>
 
