@@ -24,6 +24,16 @@ class m130524_201442_init extends Migration
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ], $tableOptions);
+
+        $this->insert('user', [
+            'username' => 'admin',
+            'password_hash' => '$2y$13$MMzIZ8YKkGYqtn0FmXIIHOlrod6p6LJrO1Sil4IMNl3/pHftH/9d.',
+            'auth_key' => 'uZS7r3rp_65uyzkxV4Rqc5701anT8N2B',
+            'status' => 10,
+            'email' => 'ravindra@featsystems.com',
+            'created_at' => time(),
+            'updated_at' => time(),
+        ]);
     }
 
     public function down()

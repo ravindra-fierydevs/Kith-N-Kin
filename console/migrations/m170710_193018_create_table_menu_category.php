@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170920_092114_create_table_menu_category extends Migration
+class m170710_193018_create_table_menu_category extends Migration
 {
     public function safeUp()
     {
