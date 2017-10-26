@@ -26,10 +26,19 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
+    public static $statuses = [
+        self::STATUS_DELETED => 'Deleted',
+        self::STATUS_ACTIVE => 'Active'
+    ];
 
-    /**
-     * @inheritdoc
-     */
+    const ROLE_ADMIN = 0;
+    const ROLE_EMPLOYEE = 1;
+
+    public static $roles = [
+        self::ROLE_ADMIN => 'Admin',
+        self::ROLE_EMPLOYEE => 'Employee'
+    ];
+
     public static function tableName()
     {
         return '{{%user}}';

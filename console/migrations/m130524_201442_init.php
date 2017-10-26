@@ -20,6 +20,7 @@ class m130524_201442_init extends Migration
             'password_reset_token' => $this->string()->unique(),
             'email' => $this->string()->notNull()->unique(),
 
+            'role' => $this->smallInteger()->notNull()->defaultValue(0),
             'status' => $this->smallInteger()->notNull()->defaultValue(10),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
@@ -29,6 +30,7 @@ class m130524_201442_init extends Migration
             'username' => 'admin',
             'password_hash' => '$2y$13$MMzIZ8YKkGYqtn0FmXIIHOlrod6p6LJrO1Sil4IMNl3/pHftH/9d.',
             'auth_key' => 'uZS7r3rp_65uyzkxV4Rqc5701anT8N2B',
+            'role' => 0,
             'status' => 10,
             'email' => 'ravindra@featsystems.com',
             'created_at' => time(),

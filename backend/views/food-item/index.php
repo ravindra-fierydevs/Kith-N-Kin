@@ -24,17 +24,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'category_id',
-            'menu_category_id',
+            //'id',
+            //'category_id',
+            //'menu_category_id',
             'name',
             'short_name',
             // 'item_code',
             // 'status',
             // 'created_by',
-            // 'updated_by',
+             [
+                'attribute' => 'updated_by',
+                'value' => function($data){
+                    return $data->createdBy->username;
+                }
+             ],
             // 'created_at',
-            // 'updated_at',
+             'updated_at:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

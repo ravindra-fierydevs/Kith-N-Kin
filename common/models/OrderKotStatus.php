@@ -5,27 +5,26 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "kot".
+ * This is the model class for table "order_kot_status".
  *
  * @property integer $id
  * @property integer $order_id
- * @property integer $food_item_id
- * @property double $quantity
- * @property double $price_each
- * @property double $price_total
+ * @property integer $order_kot_id
+ * @property integer $kot_status
  * @property integer $created_at
  * @property integer $updated_at
  *
  * @property Order $order
+ * @property OrderKot $orderKot
  */
-class Kot extends \yii\db\ActiveRecord
+class OrderKotStatus extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'kot';
+        return 'order_kot_status';
     }
 
     /**
@@ -34,9 +33,9 @@ class Kot extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'food_item_id', 'created_at', 'updated_at'], 'integer'],
-            [['quantity', 'price_each', 'price_total'], 'number'],
+            [['order_id', 'order_kot_id', 'kot_status', 'created_at', 'updated_at'], 'integer'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
+            [['order_kot_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderKot::className(), 'targetAttribute' => ['order_kot_id' => 'id']],
         ];
     }
 
@@ -48,10 +47,8 @@ class Kot extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'order_id' => 'Order ID',
-            'food_item_id' => 'Food Item ID',
-            'quantity' => 'Quantity',
-            'price_each' => 'Price Each',
-            'price_total' => 'Price Total',
+            'order_kot_id' => 'Order Kot ID',
+            'kot_status' => 'Kot Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -63,5 +60,13 @@ class Kot extends \yii\db\ActiveRecord
     public function getOrder()
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderKot()
+    {
+        return $this->hasOne(OrderKot::className(), ['id' => 'order_kot_id']);
     }
 }

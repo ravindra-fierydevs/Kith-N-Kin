@@ -98,4 +98,10 @@ class SiteController extends BaseController
 
         return $this->errorResponse("Old password is wrong");
     }
+
+    public function actionGetTable()
+    {
+    	$user = $this->checkAuth();
+
+    }
 }

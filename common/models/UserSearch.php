@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Order;
+use common\models\User;
 
 /**
- * OrderSearch represents the model behind the search form about `common\models\Order`.
+ * UserSearch represents the model behind the search form about `common\models\User`.
  */
-class OrderSearch extends Order
+class UserSearch extends User
 {
     /**
      * @inheritdoc
@@ -18,9 +18,8 @@ class OrderSearch extends Order
     public function rules()
     {
         return [
-            [['id', 'current_status', 'is_discount_applied', 'discount_in', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['unique_id'], 'safe'],
-            [['discount_value', 'total_price', 'total_price_with_discount'], 'number'],
+            [['id', 'role', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
         ];
     }
 
@@ -42,7 +41,7 @@ class OrderSearch extends Order
      */
     public function search($params)
     {
-        $query = Order::find();
+        $query = User::find();
 
         // add conditions that should always apply here
 
@@ -61,19 +60,17 @@ class OrderSearch extends Order
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'current_status' => $this->current_status,
-            'is_discount_applied' => $this->is_discount_applied,
-            'discount_in' => $this->discount_in,
-            'discount_value' => $this->discount_value,
-            'total_price' => $this->total_price,
-            'total_price_with_discount' => $this->total_price_with_discount,
+            'role' => $this->role,
+            'status' => $this->status,
             'created_at' => $this->created_at,
-            'created_by' => $this->created_by,
             'updated_at' => $this->updated_at,
-            'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'unique_id', $this->unique_id]);
+        $query->andFilterWhere(['like', 'username', $this->username])
+            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
+            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
+            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
+            ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;
     }
