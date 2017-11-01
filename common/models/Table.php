@@ -16,6 +16,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class Table extends \yii\db\ActiveRecord
 {
+    public $title;
+
     public static function tableName()
     {
         return 'table';
@@ -32,7 +34,7 @@ class Table extends \yii\db\ActiveRecord
     {
         return [
             [['number', 'capacity', 'created_at', 'updated_at'], 'integer'],
-            [['name_prefix'], 'string', 'max' => 255],
+            [['name_prefix', 'title'], 'string', 'max' => 255],
         ];
     }
 

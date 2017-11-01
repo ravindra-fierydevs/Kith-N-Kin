@@ -19,17 +19,21 @@ use Yii;
  */
 class OrderKot extends \yii\db\ActiveRecord
 {
-    /**
-     * @inheritdoc
-     */
+    const KOT_RECEIVED = 1;
+    const KOT_SERVED = 2;
+    const KOT_CANCELLED = 3;
+
+    public static $kot_statuses = [
+        self::KOT_RECEIVED => 'Received',
+        self::KOT_SERVED => 'Served',
+        self::KOT_CANCELLED => 'Cancelled'
+    ];
+
     public static function tableName()
     {
         return 'order_kot';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
@@ -38,9 +42,6 @@ class OrderKot extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
@@ -52,25 +53,16 @@ class OrderKot extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrderItems()
     {
         return $this->hasMany(OrderItem::className(), ['order_kot_id' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrder()
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrderKotStatuses()
     {
         return $this->hasMany(OrderKotStatus::className(), ['order_kot_id' => 'id']);

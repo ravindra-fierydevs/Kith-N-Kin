@@ -33,17 +33,31 @@ use Yii;
  */
 class Order extends \yii\db\ActiveRecord
 {
-    /**
-     * @inheritdoc
-     */
+    const STATUS_IN_PROGRESS = 1;
+    const STATUS_COMPLETED = 2;
+    const STATUS_CANCELLED = 3;
+
+    public static $statuses = [
+        self::STATUS_IN_PROGRESS => 'In Progress',
+        self::STATUS_COMPLETED => 'Completed',
+        self::STATUS_CANCELLED => 'Cancelled'
+    ];
+
+    const TYPE_TABLE_ORDER = 1;
+    const TYPE_PARCEL_ORDER = 2;
+    const TYPE_DELIVERY_ORDER = 3;
+
+    public static $types = [
+        self::TYPE_TABLE_ORDER => 'Table',
+        self::TYPE_PARCEL_ORDER => 'Parcel',
+        self::TYPE_DELIVERY_ORDER => 'Delivery'
+    ];
+
     public static function tableName()
     {
         return 'order';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
@@ -56,9 +70,6 @@ class Order extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
@@ -80,57 +91,36 @@ class Order extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getCreatedBy()
     {
         return $this->hasOne(User::className(), ['id' => 'created_by']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getTable()
     {
         return $this->hasOne(Table::className(), ['id' => 'table_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getUpdatedAt()
     {
         return $this->hasOne(User::className(), ['id' => 'updated_at']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrderItems()
     {
         return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrderKots()
     {
         return $this->hasMany(OrderKot::className(), ['order_id' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrderKotStatuses()
     {
         return $this->hasMany(OrderKotStatus::className(), ['order_id' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrderStatuses()
     {
         return $this->hasMany(OrderStatus::className(), ['order_id' => 'id']);

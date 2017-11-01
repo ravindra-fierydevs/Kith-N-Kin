@@ -195,4 +195,9 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
+    public static function findByAuthKey($auth_key)
+    {
+        return static::findOne(['auth_key' => $auth_key]);
+    }
 }

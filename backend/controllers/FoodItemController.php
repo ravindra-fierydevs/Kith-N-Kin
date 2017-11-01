@@ -70,16 +70,8 @@ class FoodItemController extends Controller
         $categories = Category::find()->all();
         $menu_categories = MenuCategory::find()->all();
 
-        if ($model->load(Yii::$app->request->post())) {
-            if($model->save())
-            {
-                $fip = new FoodItemPrice();
-                $fip->food_item_id = $model->id;
-                $fip->half_price = $model->half_price;
-                $fip->full_price = $model->full_price;
-                $fip->save();
-            }
-            
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [

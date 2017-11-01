@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
+use common\components\UniqueIdHelper;
 
 /**
  * This is the model class for table "food_item".
@@ -61,9 +62,11 @@ class FoodItem extends \yii\db\ActiveRecord
             [['name', 'short_name', 'item_code'], 'string', 'max' => 255],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['menu_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => MenuCategory::className(), 'targetAttribute' => ['menu_category_id' => 'id']],
+            [['price', 'name', 'short_name'], 'required'],
+            [['price'], 'number'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
-            [['half_price', 'full_price'], 'safe'],
+            [['half_price', 'full_price', 'price'], 'safe'],
         ];
     }
 
@@ -118,5 +121,21 @@ class FoodItem extends \yii\db\ActiveRecord
     {
     	$this->half_price = $this->foodPrice->half_price;
     	$this->full_price = $this->foodPrice->full_price;
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if($this->item_code == NULL){
+            $this->item_code = UniqueIdHelper::generateItemCode();
+            while(self::findOne(['item_code' => $this->item_code])){
+                $this->item_code = UniqueIdHelper::generateItemCode();
+            }
+        }
+
+        return true;
     }
 }

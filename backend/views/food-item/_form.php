@@ -34,16 +34,7 @@ use common\models\FoodItem;
 
     <div class="row">
         <div class="col-md-5">
-            <?= $form->field($model, 'half_price')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-md-5">
-            <?= $form->field($model, 'full_price')->textInput() ?>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-5">
-            <?= $form->field($model, 'item_code')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'price')->textInput() ?>
         </div>
         <div class="col-md-5">
             <?= $form->field($model, 'status')->dropDownList(FoodItem::$statuses) ?>

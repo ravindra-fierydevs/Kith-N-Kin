@@ -9,6 +9,11 @@ use yii\web\BadRequestHttpException;
 use yii\web\UnauthorizedHttpException;
 
 use common\models\User;
+use common\models\Table;
+use common\models\Order;
+use common\models\OrderKot;
+use common\models\SpecialNote;
+use common\models\FoodItem;
 use common\models\ChangePassword;
 /********
 Site Controller API
@@ -99,9 +104,69 @@ class SiteController extends BaseController
         return $this->errorResponse("Old password is wrong");
     }
 
-    public function actionGetTable()
+    public function actionGetTables()
     {
     	$user = $this->checkAuth();
+    	$model = Table::find()->all();
+    	return $model;
+    }
 
+    public function actionGetMenu()
+    {
+    	$user = $this->checkAuth();
+    	$model = FoodItem::find()->all();
+    	return $model;
+    }
+
+    public function actionGetOrderTypes()
+    {
+    	$user = $this->checkAuth();
+    	$types = Order::$types;
+    	return $types;
+    }
+
+    public function actionGetOrderStatuses()
+    {
+    	$user = $this->checkAuth();
+    	$statuses = Order::$statuses;
+    	return $statuses;
+    }
+
+    public function actionGetKotStatuses()
+    {
+    	$user = $this->checkAuth();
+    	$kot_statuses = OrderKot::$kot_statuses;
+    	return $kot_statuses;
+    }
+
+    public function actionGetSpecialNotes()
+    {
+    	$user = $this->checkAuth();
+    	$model = SpecialNote::find()->all();
+    	return $model;
+    }
+
+    public function actionCreateOrder()
+    {
+    	$user = $this->checkAuth();
+    	$type = Yii::$app->request->post('type');
+        $table_id = Yii::$app->request->post('table_id');
+        $food_item_id = Yii::$app->request->post('food_item_id');
+        $quantity = Yii::$app->request->post('quantity');
+        $special_notes = Yii::$app->request->post('special_notes');
+
+        if(!$type){
+            throw new BadRequestHttpException("Type cannot be left blank");
+        }
+
+        if(!$food_item_id){
+            throw new BadRequestHttpException("Food item id cannot be left blank");
+        }
+
+        if(!$quantity){
+            throw new BadRequestHttpException("Quantity cannot be left blank");
+        }
+
+        return "validation successful";
     }
 }
