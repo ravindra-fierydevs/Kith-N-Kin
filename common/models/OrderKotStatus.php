@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "order_kot_status".
@@ -19,17 +20,19 @@ use Yii;
  */
 class OrderKotStatus extends \yii\db\ActiveRecord
 {
-    /**
-     * @inheritdoc
-     */
+
     public static function tableName()
     {
         return 'order_kot_status';
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
+
     public function rules()
     {
         return [
@@ -39,9 +42,6 @@ class OrderKotStatus extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
@@ -54,17 +54,11 @@ class OrderKotStatus extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrder()
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrderKot()
     {
         return $this->hasOne(OrderKot::className(), ['id' => 'order_kot_id']);

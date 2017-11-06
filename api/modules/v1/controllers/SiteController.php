@@ -7,12 +7,15 @@ use yii\helpers\Url;
 use api\common\components\BaseController;
 use yii\web\BadRequestHttpException;
 use yii\web\UnauthorizedHttpException;
+use yii\web\ServerErrorHttpException;
 
 use common\models\User;
 use common\models\Table;
 use common\models\Order;
 use common\models\OrderKot;
+use common\models\OrderItem;
 use common\models\SpecialNote;
+use common\models\OrderItemSpecialNote;
 use common\models\FoodItem;
 use common\models\ChangePassword;
 /********
@@ -154,6 +157,8 @@ class SiteController extends BaseController
         $food_item_id = Yii::$app->request->post('food_item_id');
         $quantity = Yii::$app->request->post('quantity');
         $special_notes = Yii::$app->request->post('special_notes');
+        //$special_notes = explode(',', $special_notes);
+        $special_notes = array_map('trim', explode(',', $special_notes));
 
         if(!$type){
             throw new BadRequestHttpException("Type cannot be left blank");
@@ -167,6 +172,66 @@ class SiteController extends BaseController
             throw new BadRequestHttpException("Quantity cannot be left blank");
         }
 
-        return "validation successful";
+        if($type == Order::TYPE_TABLE_ORDER){
+        	if(!$table_id){
+        		throw new BadRequestHttpException("Table id cannot be left blank when type is 1");
+        	}
+        }
+
+        $foodItemModel = FoodItem::findOne($food_item_id);
+        if(!$foodItemModel){
+        	throw new BadRequestHttpException("Food Item Id is not valid or has been deleted");
+		}
+
+        $order = new Order();
+        $kot = new OrderKot();
+        $order_item = new OrderItem();
+
+        $order->type = $type;
+        if($type == Order::TYPE_TABLE_ORDER){
+        	$order->table_id = $table_id;
+        }
+
+        $order->current_status = Order::STATUS_IN_PROGRESS;
+        $order->created_by = $user->id;
+        $order->updated_by = $user->id;
+
+        if($order->validate()){
+        	if($order->save()){
+        		$kot->order_id = $order->id;
+        		$kot->current_status = OrderKot::KOT_RECEIVED;
+        		if($kot->save()){
+        			$order_item->order_id = $kot->order_id;
+        			$order_item->order_kot_id = $kot->id;
+
+        			$order_item->food_item_id = $foodItemModel->id;
+        			$order_item->quantity = $quantity;
+        			$order_item->price_each = $foodItemModel->price;
+        			$order_item->price_total = $foodItemModel->price * $quantity;
+        			if($order_item->save()){
+	        			foreach ($special_notes as $sp) {
+	        				$orderItemSpecialNote = new OrderItemSpecialNote();
+	        				$orderItemSpecialNote->special_note_id = $sp; 
+	        				$orderItemSpecialNote->order_item_id = $order_item->id;
+	        				$orderItemSpecialNote->save();
+	        			}
+
+	        			return ['success' => true, 'order' => $order, 'kot' => $kot, 'order', 'order_item' => $order_item];
+        			}
+        			throw new ServerErrorHttpException('Something went wrong. Please try again after some time.');
+        		}
+        		throw new ServerErrorHttpException('Something went wrong. Please try again after some time.');
+        	}
+        	throw new ServerErrorHttpException('Something went wrong. Please try again after some time.');
+        }
+
+        return [
+			"name" => "Bad Request",
+			"message" => $order->getErrors(),
+			"code" => 0,
+			"status" => 400,
+			"type" => "yii\web\BadRequestHttpException"
+		];
+
     }
 }

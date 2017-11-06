@@ -3,7 +3,7 @@
 namespace common\models;
 
 use Yii;
-
+use yii\behaviors\TimestampBehavior;
 /**
  * This is the model class for table "order_kot".
  *
@@ -32,6 +32,13 @@ class OrderKot extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'order_kot';
+    }
+
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
     }
 
     public function rules()
@@ -66,5 +73,17 @@ class OrderKot extends \yii\db\ActiveRecord
     public function getOrderKotStatuses()
     {
         return $this->hasMany(OrderKotStatus::className(), ['order_kot_id' => 'id']);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        if($insert){
+            $orderKotStatus = new OrderKotStatus;
+            $orderKotStatus->order_kot_id = $this->id;
+            $orderKotStatus->order_id = $this->order_id;
+            $orderKotStatus->kot_status = $this->current_status;
+            $orderKotStatus->save();
+        }
+        return parent::afterSave($insert, $changedAttributes);
     }
 }

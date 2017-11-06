@@ -3,7 +3,10 @@
 namespace common\models;
 
 use Yii;
-
+use common\models\OrderStatus;
+use common\components\UniqueIdHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 /**
  * This is the model class for table "order".
  *
@@ -58,6 +61,14 @@ class Order extends \yii\db\ActiveRecord
         return 'order';
     }
 
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+            //BlameableBehavior::className(),
+        ];
+    }
+
     public function rules()
     {
         return [
@@ -67,6 +78,12 @@ class Order extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
             [['table_id'], 'exist', 'skipOnError' => true, 'targetClass' => Table::className(), 'targetAttribute' => ['table_id' => 'id']],
             [['updated_at'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_at' => 'id']],
+            [['table_id'], 'required', 'when' => function($model){
+                if($model->type == 1){
+                    return true;
+                }
+                return false;
+            }],
         ];
     }
 
@@ -124,5 +141,36 @@ class Order extends \yii\db\ActiveRecord
     public function getOrderStatuses()
     {
         return $this->hasMany(OrderStatus::className(), ['order_id' => 'id']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if($insert){
+            $this->unique_id = UniqueIdHelper::generateUniqueId('OD');
+            while(self::findOne(['unique_id' => $this->unique_id])){
+                $this->unique_id = UniqueIdHelper::generateUniqueId('OD');
+            }
+
+            $current_date = date('Y-m-d');
+            //$orders = Order::find()->where(['created_at' => ])->all();
+
+        }
+
+        return true;
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        if($insert){
+            $orderStatus = new OrderStatus;
+            $orderStatus->order_id = $this->id;
+            $orderStatus->order_status = $this->current_status;
+            $orderStatus->save();
+        }
+        return parent::afterSave($insert, $changedAttributes);
     }
 }
