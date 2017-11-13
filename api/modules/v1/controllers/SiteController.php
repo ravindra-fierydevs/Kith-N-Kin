@@ -45,6 +45,22 @@ class SiteController extends BaseController
         return $actions;
     }
 
+    
+    public function actionUploadPic()
+    {
+        $uploadForm = new UploadForm();
+        $file = \yii\web\UploadedFile::getInstance($uploadForm, 'imageFile');
+        $uploadForm->imageFile = $file;
+        $fileName = $uploadForm->imageFile->baseName."_".time().'.'.$uploadForm->imageFile->extension;
+
+        if($uploadForm->imageFile->saveAs('uploads/' . $fileName))
+        {
+            return ['success' => 'true', 'url' => 'http://192.168.0.222:84/Kith-N-Kin/api/web/uploads/' . $fileName];
+        }
+
+        throw new ServerErrorHttpException('Something went wrong. Please try again after some time.');
+    }
+
     public function actionLogin()
     {
         $username = Yii::$app->request->post('username');
@@ -65,7 +81,7 @@ class SiteController extends BaseController
             $result = ['success' => 'true', 'data' => $user];
             return $result;
         }
-        
+
         throw new UnauthorizedHttpException("User is not registered");
     }
 
@@ -234,21 +250,6 @@ class SiteController extends BaseController
 			"type" => "yii\web\BadRequestHttpException"
 		];
 
-    }
-
-    public function actionUploadPic()
-    {
-        $uploadForm = new UploadForm();
-        $file = \yii\web\UploadedFile::getInstance($uploadForm, 'imageFile');
-        $uploadForm->imageFile = $file;
-        $fileName = $uploadForm->imageFile->baseName."_".time().'.'.$uploadForm->imageFile->extension;
-
-        if($uploadForm->imageFile->saveAs('uploads/' . $fileName))
-        {
-            return ['success' => 'true', 'url' => 'http://192.168.0.222:84/Kith-N-Kin/api/web/uploads/' . $fileName];
-        }
-
-        throw new ServerErrorHttpException('Something went wrong. Please try again after some time.');
     }
 
     public function actionAddFoodItem()
