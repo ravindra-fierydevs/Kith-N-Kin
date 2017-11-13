@@ -39,6 +39,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => $model->menuCategory->name,
             ],
             'name',
+            [
+            	'attribute' => 'price',
+            	'label' => 'Price (in Rs.)',
+            	'value' => $model->price
+            ],
             'short_name',
             'item_code',
             [

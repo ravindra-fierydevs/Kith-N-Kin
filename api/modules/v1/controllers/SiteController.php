@@ -18,6 +18,8 @@ use common\models\SpecialNote;
 use common\models\OrderItemSpecialNote;
 use common\models\FoodItem;
 use common\models\ChangePassword;
+use common\models\UploadForm;
+
 /********
 Site Controller API
 @author Featsystems <ravindra.chavan@featsystems.com>
@@ -63,9 +65,8 @@ class SiteController extends BaseController
             $result = ['success' => 'true', 'data' => $user];
             return $result;
         }
-        $result = ['error' => 'true', 'message' => 'User is not registered'];
-        return $result;
-        //throw new UnauthorizedHttpException("User is not registered");
+        
+        throw new UnauthorizedHttpException("User is not registered");
     }
 
     public function actionViewProfile()
@@ -233,5 +234,73 @@ class SiteController extends BaseController
 			"type" => "yii\web\BadRequestHttpException"
 		];
 
+    }
+
+    public function actionUploadPic()
+    {
+        $uploadForm = new UploadForm();
+        $file = \yii\web\UploadedFile::getInstance($uploadForm, 'imageFile');
+        $uploadForm->imageFile = $file;
+        $fileName = $uploadForm->imageFile->baseName."_".time().'.'.$uploadForm->imageFile->extension;
+
+        if($uploadForm->imageFile->saveAs('uploads/' . $fileName))
+        {
+            return ['success' => 'true', 'url' => 'http://192.168.0.222:84/Kith-N-Kin/api/web/uploads/' . $fileName];
+        }
+
+        throw new ServerErrorHttpException('Something went wrong. Please try again after some time.');
+    }
+
+    public function actionAddFoodItem()
+    {
+        $kot_id = Yii::$app->request->post('kot_id');
+        $food_item_id = Yii::$app->request->post('food_item_id');
+        $quantity = Yii::$app->request->post('quantity');
+        $special_notes = Yii::$app->request->post('special_notes');
+        $special_notes = array_map('trim', explode(',', $special_notes));
+
+        if(!$kot_id){
+            throw new BadRequestHttpException("Kot id cannot be left blank");
+        }
+
+        if(!$food_item_id){
+            throw new BadRequestHttpException("Food item id cannot be left blank");
+        }
+
+        if(!$quantity){
+            throw new BadRequestHttpException("Quantity cannot be left blank");
+        }
+
+        $kotModel = OrderKot::findOne($kot_id);
+
+        if(!$kotModel){
+            throw new BadRequestHttpException("Kot id is invalid");
+        }
+
+        $this->validateKot($kotModel);
+
+        $foodItemModel = FoodItem::findOne($food_item_id);
+
+        if(!$foodItemModel){
+            throw new BadRequestHttpException("Food Item Id is not valid or has been deleted");
+        }
+
+        $orderItem = new OrderItem();
+        $orderItem->order_id = $kotModel->order->id;
+        $orderItem->order_kot_id = $kotModel->id;
+        $orderItem->food_item_id = $foodItemModel->id;
+        $orderItem->quantity = $quantity;
+        $orderItem->price_each = $foodItemModel->price;
+        $orderItem->price_total = $foodItemModel->price * $quantity;
+        if($orderItem->save()){
+            foreach ($special_notes as $sp) {
+                $orderItemSpecialNote = new OrderItemSpecialNote();
+                $orderItemSpecialNote->special_note_id = $sp;
+                $orderItemSpecialNote->order_item_id = $orderItem->id;
+                $orderItemSpecialNote->save();
+            }
+        }
+
+        return $this->successResponse($orderItem);
     }
 }
